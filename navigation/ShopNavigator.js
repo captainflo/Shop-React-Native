@@ -5,16 +5,24 @@ import Colors from '../constants/Colors';
 
 import ProdutsOverviewScreen from '../screens/shop/ProductsOverviewScreen';
 import ProductDetailScreen from '../screens/shop/ProductDetailScreen';
+import CartScreen from '../screens/shop/CartScreen';
 
 const ProductsNavigator = createStackNavigator(
   {
     ProductsOverview: ProdutsOverviewScreen,
     ProductDetail: ProductDetailScreen,
+    Cart: CartScreen,
   },
   {
     defaultNavigationOptions: {
       headerStyle: {
         backgroundColor: Platform.OS === 'android' ? Colors.primary : '',
+      },
+      headerTitleStyle: {
+        fontFamily: 'open-sans-bold',
+      },
+      headerBackTitleStyle: {
+        fontFamily: 'open-sans',
       },
       headerTintColor: Platform.OS === 'android' ? 'white' : Colors.primary,
     },
