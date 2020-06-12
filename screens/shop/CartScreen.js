@@ -1,5 +1,12 @@
-import React from 'react';
-import { View, Text, StyleSheet, FlatList, Button } from 'react-native';
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  Button,
+  ActivityIndicator,
+} from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import Colors from '../../constants/Colors';
 import CartItem from '../../components/shop/CartItem';
@@ -8,6 +15,8 @@ import * as ordersActions from '../../store/actions/order';
 import Card from '../../components/UI/Card';
 
 const CartScreen = (props) => {
+  const [isLoading, setIsLoading] = useState(false);
+
   const cartTotalAmount = useSelector((state) => state.cart.totalAmount);
   // Will return not a object but array
   const cartItems = useSelector((state) => {
@@ -28,6 +37,12 @@ const CartScreen = (props) => {
 
   const dispatch = useDispatch();
 
+  const sendOrderHandler = async () => {
+    setIsLoading(true);
+    await dispatch(ordersActions.addOrder(cartItems, cartTotalAmount));
+    setIsLoading(false);
+  };
+
   return (
     <Card style={styles.screen}>
       <View style={styles.summary}>
@@ -37,14 +52,16 @@ const CartScreen = (props) => {
             ${Math.round((cartTotalAmount.toFixed(2) * 100) / 100)}
           </Text>
         </Text>
-        <Button
-          color={Colors.accent}
-          title="Order Now"
-          disabled={cartItems.length === 0}
-          onPress={() => {
-            dispatch(ordersActions.addOrder(cartItems, cartTotalAmount));
-          }}
-        />
+        {isLoading ? (
+          <ActivityIndicator size="small" color={Colors.primary} />
+        ) : (
+          <Button
+            color={Colors.accent}
+            title="Order Now"
+            disabled={cartItems.length === 0}
+            onPress={sendOrderHandler}
+          />
+        )}
       </View>
       <FlatList
         data={cartItems}
@@ -70,6 +87,11 @@ CartScreen.navigationOptions = {
 };
 
 const styles = StyleSheet.create({
+  centred: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   screen: {
     margin: 20,
   },

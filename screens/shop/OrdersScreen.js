@@ -1,13 +1,48 @@
-import React from 'react';
-import { FlatList, Text, Platform } from 'react-native';
-import { useSelector } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import {
+  FlatList,
+  Platform,
+  View,
+  StyleSheet,
+  ActivityIndicator,
+} from 'react-native';
+import { useSelector, useDispatch } from 'react-redux';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import HeaderButton from '../../components/UI/HeaderButton';
 import OrderItem from '../../components/shop/OrderItem';
 import moment from 'moment';
+import * as ordersActions from '../../store/actions/order';
+import Colors from '../../constants/Colors';
 
 const OrdersScreen = (props) => {
   const orders = useSelector((state) => state.orders.orders);
+  const dispatch = useDispatch();
+
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  loadOrders = async () => {
+    setIsLoaded(true);
+    await dispatch(ordersActions.fetchOrders());
+    setIsLoaded(false);
+  };
+
+  useEffect(() => {
+    // loadOrders();
+    // Or
+    setIsLoaded(true);
+    dispatch(ordersActions.fetchOrders()).then(() => {
+      setIsLoaded(false);
+    });
+  }, [dispatch]);
+
+  if (isLoaded) {
+    return (
+      <View style={styles.center}>
+        <ActivityIndicator size="large" color={Colors.primary} />
+      </View>
+    );
+  }
+
   return (
     <FlatList
       data={orders}
@@ -25,7 +60,7 @@ const OrdersScreen = (props) => {
 OrdersScreen.navigationOptions = (navData) => {
   return {
     headerTitle: 'Your Orders',
-    headerLeft: (
+    headerLeft: () => (
       <HeaderButtons HeaderButtonComponent={HeaderButton}>
         <Item
           title="Menu"
@@ -36,5 +71,13 @@ OrdersScreen.navigationOptions = (navData) => {
     ),
   };
 };
+
+const styles = StyleSheet.create({
+  center: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
 
 export default OrdersScreen;

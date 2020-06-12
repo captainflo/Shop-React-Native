@@ -11,21 +11,21 @@ const UserProductsScreen = (props) => {
   const userProducts = useSelector((state) => state.products.userProducts);
   const dispatch = useDispatch();
 
-  const deleteHandler = (itemData) => {
+  const editProductHandler = (id) => {
+    props.navigation.navigate('EditProduct', { productId: id });
+  };
+
+  const deleteHandler = (id) => {
     Alert.alert('Are you sure?', 'Do you really want to delete this item?', [
       { text: 'No', style: 'default' },
       {
         text: 'Yes',
         style: 'destructive',
         onPress: () => {
-          dispatch(productsActions.deleteProduct(itemData.item.id));
+          dispatch(productsActions.deleteProduct(id));
         },
       },
     ]);
-  };
-
-  const editProductHandler = (id) => {
-    props.navigation.navigate('EditProduct', { productId: id });
   };
 
   return (
@@ -37,17 +37,21 @@ const UserProductsScreen = (props) => {
           image={itemData.item.imageUrl}
           title={itemData.item.title}
           price={itemData.item.price}
-          onSelect={() => editProductHandler(itemData.item.id)}
+          onSelect={() => {
+            editProductHandler(itemData.item.id);
+          }}
         >
           <Button
             color={Colors.primary}
             title="Edit"
-            onPress={() => editProductHandler(itemData.item.id)}
+            onPress={() => {
+              editProductHandler(itemData.item.id);
+            }}
           />
           <Button
             color={Colors.primary}
             title="Delete"
-            onPress={() => deleteHandler(itemData)}
+            onPress={deleteHandler.bind(this, itemData.item.id)}
           />
         </ProductItem>
       )}
@@ -58,27 +62,29 @@ const UserProductsScreen = (props) => {
 UserProductsScreen.navigationOptions = (navData) => {
   return {
     headerTitle: 'Your Products',
-    headerLeft: (
+    headerLeft: () => (
       <HeaderButtons HeaderButtonComponent={HeaderButton}>
         <Item
           title="Menu"
           iconName={Platform.OS === 'android' ? 'md-menu' : 'ios-menu'}
-          onPress={() => navData.navigation.toggleDrawer()}
+          onPress={() => {
+            navData.navigation.toggleDrawer();
+          }}
         />
       </HeaderButtons>
     ),
-    headerRight: (
+    headerRight: () => (
       <HeaderButtons HeaderButtonComponent={HeaderButton}>
         <Item
-          title="Menu"
+          title="Add"
           iconName={Platform.OS === 'android' ? 'md-create' : 'ios-create'}
-          onPress={() => navData.navigation.navigate('EditProduct')}
+          onPress={() => {
+            navData.navigation.navigate('EditProduct');
+          }}
         />
       </HeaderButtons>
     ),
   };
 };
-
-const styles = StyleSheet.create({});
 
 export default UserProductsScreen;
