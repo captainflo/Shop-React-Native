@@ -1,6 +1,7 @@
 import { AsyncStorage } from 'react-native';
 export const AUTHENTICATE = 'AUTHENTICATE';
 export const LOGOUT = 'LOGOUT';
+import { API_FIREBASE } from 'react-native-dotenv';
 
 let timer;
 
@@ -14,7 +15,7 @@ export const authenticate = (userId, token, expiryTime) => {
 export const signup = (email, password) => {
   return async (dispatch) => {
     const response = await fetch(
-      `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${process.env.REACT_APP_API_FIREBASE}`,
+      `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${API_FIREBASE}`,
       {
         method: 'POST',
         headers: {
@@ -57,7 +58,7 @@ export const signup = (email, password) => {
 export const login = (email, password) => {
   return async (dispatch) => {
     const response = await fetch(
-      `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${process.env.REACT_APP_API_FIREBASE}`,
+      `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${API_FIREBASE}`,
       {
         method: 'POST',
         headers: {

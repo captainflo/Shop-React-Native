@@ -1,4 +1,5 @@
 import Product from '../../models/product';
+import { API_FIREBASE_URL } from 'react-native-dotenv';
 
 export const DELETE_PRODUCT = 'DELETE_PRODUCT';
 export const CREATE_PRODUCT = 'CREATE_PRODUCT';
@@ -10,9 +11,7 @@ export const fetchProducts = () => {
     // any async code you want!
     const userId = getState().auth.userId;
     try {
-      const response = await fetch(
-        `${REACT_APP_API_FIREBASE_UR}/products.json`
-      );
+      const response = await fetch(`${API_FIREBASE_URL}/products.json`);
 
       if (!response.ok) {
         throw new Error('Something went wrong!');
@@ -50,7 +49,7 @@ export const deleteProduct = (productId) => {
   return async (dispatch, getState) => {
     const token = getState().auth.token;
     const response = await fetch(
-      `${REACT_APP_API_FIREBASE_UR}/products/${productId}.json?auth=${token}`,
+      `${API_FIREBASE_URL}/products/${productId}.json?auth=${token}`,
       {
         method: 'DELETE',
       }
@@ -69,7 +68,7 @@ export const createProduct = (title, description, imageUrl, price) => {
     const token = getState().auth.token;
     const userId = getState().auth.userId;
     const response = await fetch(
-      `${REACT_APP_API_FIREBASE_UR}/products.json?auth=${token}`,
+      `${API_FIREBASE_URL}/products.json?auth=${token}`,
       {
         method: 'POST',
         headers: {
@@ -105,7 +104,7 @@ export const updateProduct = (id, title, description, imageUrl) => {
   return async (dispatch, getState) => {
     const token = getState().auth.token;
     const response = await fetch(
-      `${REACT_APP_API_FIREBASE_UR}/products/${id}.json?auth=${token}`,
+      `${API_FIREBASE_URL}/products/${id}.json?auth=${token}`,
       {
         method: 'PATCH',
         headers: {

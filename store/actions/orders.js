@@ -1,5 +1,5 @@
 import Order from '../../models/order';
-
+import { API_FIREBASE_URL } from 'react-native-dotenv';
 export const ADD_ORDER = 'ADD_ORDER';
 export const SET_ORDERS = 'SET_ORDERS';
 
@@ -7,9 +7,7 @@ export const fetchOrders = () => {
   return async (dispatch, getState) => {
     const userId = getState().auth.userId;
     try {
-      const response = await fetch(
-        `https://shop-app-aeda7.firebaseio.com/orders/${userId}.json`
-      );
+      const response = await fetch(`${API_FIREBASE_URL}/orders/${userId}.json`);
 
       if (!response.ok) {
         throw new Error('Something went wrong!');
@@ -41,7 +39,7 @@ export const addOrder = (cartItems, totalAmount) => {
     const userId = getState().auth.userId;
     const date = new Date();
     const response = await fetch(
-      `https://shop-app-aeda7.firebaseio.com/orders/${userId}.json?auth=${token}`,
+      `${API_FIREBASE_URL}/orders/${userId}.json?auth=${token}`,
       {
         method: 'POST',
         headers: {
